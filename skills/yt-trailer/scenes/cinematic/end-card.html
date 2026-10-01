@@ -1,0 +1,37 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&display=swap" />
+      <style>
+        #root { position: absolute; inset: 0; overflow: hidden; background: radial-gradient(ellipse at 50% 45%, color-mix(in srgb, __ACCENT__ 22%, __BG__) 0%, __BG__ 72%); }
+        .cec-stack { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3vmin; padding: 0 8%; text-align: center; }
+        .cec-title { margin: 0; font-family: "Cinzel", serif; font-weight: 800; font-size: 8.5vmin; line-height: 1.1; letter-spacing: 0.08em; color: __FG__; }
+        .cec-sub { font-family: "Cinzel", serif; font-weight: 600; font-size: 3vmin; letter-spacing: 0.4em; text-transform: uppercase; color: __ACCENT__; }
+        .cec-sub:empty { display: none; }
+        .cec-cta { margin-top: 2vmin; padding-top: 2vmin; border-top: 1px solid __ACCENT__; font-family: "Cinzel", serif; font-weight: 600; font-size: 2.6vmin; letter-spacing: 0.6em; color: __FG__; }
+      </style>
+      <div id="root" data-composition-id="__ID__" data-width="__W__" data-height="__H__">
+        <div class="cec-stack">
+          <h1 class="cec-title">__TEXT__</h1>
+          <div class="cec-sub">__SUB__</div>
+          <div class="cec-cta">WATCH THE FULL VIDEO</div>
+        </div>
+      </div>
+      <script>
+        (() => {
+          const q = (sel) => document.querySelectorAll('[data-composition-id="__ID__"] ' + sel);
+          const D = __DUR__;
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo(q(".cec-stack"), { scale: 1 }, { scale: 1.05, duration: D, ease: "none" }, 0);
+          tl.fromTo(q(".cec-title"), { opacity: 0, y: 30, filter: "blur(8px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 1.1, ease: "power3.out" }, 0.1);
+          tl.fromTo(q(".cec-sub"), { opacity: 0 }, { opacity: 1, duration: 0.8 }, 0.7);
+          tl.fromTo(q(".cec-cta"), { opacity: 0, y: 10 }, { opacity: 0.85, y: 0, duration: 0.8 }, 1.1);
+          tl.to(q(".cec-stack"), { opacity: 0, duration: 0.8, ease: "power1.in" }, D - 0.8);
+          window.__timelines["__ID__"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

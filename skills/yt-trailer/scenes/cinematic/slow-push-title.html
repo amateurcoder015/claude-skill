@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&display=swap" />
+      <style>
+        #root { position: absolute; inset: 0; overflow: hidden; background: radial-gradient(ellipse at 50% 55%, color-mix(in srgb, __ACCENT__ 18%, __BG__) 0%, __BG__ 70%); }
+        .spt-wrap { position: absolute; inset: 0; display: grid; place-items: center; }
+        .spt-text { margin: 0; max-width: 82%; text-align: center; font-family: "Cinzel", serif; font-weight: 800; font-size: 11vmin; line-height: 1.08; letter-spacing: 0.12em; color: __FG__; text-shadow: 0 0 40px color-mix(in srgb, __ACCENT__ 45%, transparent); }
+        .spt-line { position: absolute; top: 66%; left: 30%; width: 40%; height: 2px; background: __ACCENT__; transform-origin: 50% 50%; }
+        .spt-sub { position: absolute; top: 70%; left: 0; right: 0; text-align: center; font-family: "Cinzel", serif; font-weight: 600; font-size: 3.4vmin; letter-spacing: 0.5em; color: __ACCENT__; }
+        .spt-sub:empty { display: none; }
+      </style>
+      <div id="root" data-composition-id="__ID__" data-width="__W__" data-height="__H__">
+        <div class="spt-wrap"><h1 class="spt-text">__TEXT__</h1></div>
+        <div class="spt-line"></div>
+        <div class="spt-sub">__SUB__</div>
+      </div>
+      <script>
+        (() => {
+          const q = (sel) => document.querySelectorAll('[data-composition-id="__ID__"] ' + sel);
+          const D = __DUR__;
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo(q(".spt-text"), { scale: 0.96 }, { scale: 1.08, duration: D, ease: "none" }, 0);
+          tl.fromTo(q(".spt-text"), { opacity: 0, filter: "blur(10px)" }, { opacity: 1, filter: "blur(0px)", duration: 1.0, ease: "power2.out" }, 0);
+          tl.fromTo(q(".spt-line"), { scaleX: 0 }, { scaleX: 1, duration: 1.2, ease: "power3.inOut" }, 0.4);
+          tl.fromTo(q(".spt-sub"), { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }, 0.8);
+          tl.to(q(".spt-text, .spt-sub, .spt-line"), { opacity: 0, duration: 0.35, ease: "power1.in" }, D - 0.35);
+          window.__timelines["__ID__"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>
