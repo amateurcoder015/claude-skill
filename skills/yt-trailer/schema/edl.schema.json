@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "yt-trailer edit plan (edl.json)",
+  "description": "Written by Claude, validated by scripts/build.mjs. Clip duration = (out - in) / rate, where rate is 0.5 for slowmo, 1.5 for speed-ramp, else 1. Every other scene uses dur. All scene durations must sum to duration (±0.5 s).",
+  "type": "object",
+  "required": ["style", "format", "duration", "palette", "scenes"],
+  "properties": {
+    "style": { "enum": ["cinematic", "highlight", "hype"] },
+    "styleReason": { "type": "string" },
+    "format": { "enum": ["16:9", "9:16"] },
+    "duration": { "enum": [30, 45, 60] },
+    "palette": {
+      "type": "object",
+      "required": ["bg", "accent", "fg"],
+      "properties": {
+        "bg": { "type": "string", "pattern": "^#[0-9a-fA-F]{6}$" },
+        "accent": { "type": "string", "pattern": "^#[0-9a-fA-F]{6}$" },
+        "fg": { "type": "string", "pattern": "^#[0-9a-fA-F]{6}$" }
+      }
+    },
+    "music": {
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "required": ["track"],
+          "properties": {
+            "track": { "type": "string", "description": "Relative to the skill dir (bundled) or absolute (user file)" },
+            "duck": { "type": "boolean", "default": true },
+            "volume": { "type": "number", "exclusiveMinimum": 0, "maximum": 1, "default": 0.8 }
+          }
+        }
+      ]
+    },
+    "overlays": { "type": "array", "items": { "enum": ["letterbox", "grain-lightleak", "glitch-rgb"] } },
+    "scenes": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "oneOf": [
+          { "$ref": "#/$defs/clip" },
+          { "$ref": "#/$defs/montage" },
+          { "$ref": "#/$defs/title" },
+          { "$ref": "#/$defs/hero" },
+          { "$ref": "#/$defs/endCard" }
+        ]
+      }
+    }
+  },
+  "$defs": {
+    "clip": {
+      "type": "object",
+      "required": ["type", "in", "out"],
+      "properties": {
+        "type": { "const": "clip" },
+        "in": { "type": "number", "minimum": 0 },
+        "out": { "type": "number" },
+        "audio": { "enum": ["original", "mute"], "default": "original" },
+        "fx": { "type": "array", "items": { "enum": ["slowmo", "speed-ramp", "flash-punch", "push-in", "zoom-in"] } },
+        "cropX": { "type": "number", "minimum": 0, "maximum": 1 },
+        "caption": { "type": "string", "maxLength": 80 }
+      }
+    },
+    "montage": {
+      "type": "object",
+      "required": ["type", "panels", "dur"],
+      "properties": {
+        "type": { "const": "montage" },
+        "panels": { "type": "array", "minItems": 2, "maxItems": 3, "items": { "type": "object", "required": ["in"], "properties": { "in": { "type": "number", "minimum": 0 } } } },
+        "dur": { "type": "number", "minimum": 1, "maximum": 6 }
+      }
+    },
+    "title": {
+      "type": "object",
+      "required": ["type", "scene", "text", "dur"],
+      "properties": {
+        "type": { "const": "title" },
+        "scene": { "enum": ["cinematic/slow-push-title", "cinematic/black-to-title", "hype/kinetic-slam", "highlight/quote-card", "highlight/chapter-bumper"] },
+        "text": { "type": "string", "description": "Max 40 characters; 120 for highlight/quote-card" },
+        "sub": { "type": "string" },
+        "dur": { "type": "number", "minimum": 1, "maximum": 6 }
+      }
+    },
+    "hero": {
+      "type": "object",
+      "required": ["type", "dur"],
+      "properties": {
+        "type": { "const": "hero" },
+        "text": { "type": "string", "maxLength": 40 },
+        "sub": { "type": "string" },
+        "dur": { "type": "number", "minimum": 2, "maximum": 8 }
+      }
+    },
+    "endCard": {
+      "type": "object",
+      "required": ["type", "title", "dur"],
+      "properties": {
+        "type": { "const": "end-card" },
+        "title": { "type": "string", "maxLength": 80 },
+        "sub": { "type": "string" },
+        "dur": { "type": "number", "minimum": 2, "maximum": 6 }
+      }
+    }
+  }
+}
