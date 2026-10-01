@@ -75,7 +75,7 @@ roots="${YT_TRAILER_SKILL_ROOTS:-$HOME/.claude/skills:$HOME/.claude/plugins:$PWD
 found=0
 IFS=':' read -r -a root_list <<< "$roots"
 for root in "${root_list[@]}"; do
-  if [ -d "$root" ] && [ -n "$(find "$root" -maxdepth 6 -path '*hyperframes-core/SKILL.md' -print 2>/dev/null | head -1)" ]; then
+  if [ -d "$root" ] && [ -n "$(find "$root" -maxdepth 9 -path '*hyperframes-core/SKILL.md' -print 2>/dev/null | head -1)" ]; then
     found=1
     break
   fi

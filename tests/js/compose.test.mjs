@@ -117,3 +117,10 @@ test("back-to-back clip audio alternates tracks so cuts never overlap", () => {
   const tracks = [...html.matchAll(/<audio id="s\d+-a"[^>]*data-track-index="(\d+)"/g)].map((m) => m[1]);
   assert.deepEqual(tracks.slice(0, 4), ["10", "12", "10", "12"]);
 });
+
+test("lower-third captions sit above full-length overlays", () => {
+  const { html } = composeIndex({ ...validEdl(), overlays: ["letterbox", "grain-lightleak", "glitch-rgb"] });
+  const capZ = Number(html.match(/\.lower-third \{[^}]*z-index: (\d+)/)[1]);
+  const overlayZ = Math.max(...[...html.matchAll(/id="ov-[^"]+"[^>]*style="z-index:(\d+)"/g)].map((m) => Number(m[1])));
+  assert.ok(capZ > overlayZ, `caption z ${capZ} must exceed overlay z ${overlayZ}`);
+});

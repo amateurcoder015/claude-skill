@@ -154,7 +154,7 @@ export function composeIndex(edl, { transcript = [], musicSrc = null, hasAudio =
       .panel { position: relative; overflow: hidden; border-radius: 8px; }
       .layer { position: absolute; inset: 0; }
       .flash { position: absolute; inset: 0; background: #fff; z-index: 4; }
-      .lower-third { position: absolute; left: 6%; bottom: 9%; max-width: 80%; display: flex; align-items: stretch; gap: 18px; z-index: 3; }
+      .lower-third { position: absolute; left: 6%; bottom: 9%; max-width: 80%; display: flex; align-items: stretch; gap: 18px; z-index: 20; }
       .lt-bar { width: 10px; background: ${accent}; transform-origin: 50% 100%; }
       .lt-text { font: 600 44px/1.25 Inter, system-ui, sans-serif; color: ${fg}; background: rgba(0, 0, 0, 0.5); padding: 12px 22px; border-radius: 6px; }
     </style>

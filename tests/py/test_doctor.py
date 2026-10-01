@@ -77,3 +77,14 @@ def test_missing_hyperframes_skills(env, tmp_path):
     proc = run(env)
     assert proc.returncode == 1
     assert "HyperFrames skills" in proc.stdout
+
+
+def test_finds_hyperframes_in_plugin_cache(env, tmp_path):
+    plugins = tmp_path / "plugins"
+    deep = plugins / "cache" / "heygen" / "hyperframes" / "1.2.3" / "skills" / "hyperframes-core"
+    deep.mkdir(parents=True)
+    (deep / "SKILL.md").write_text("x")
+    env["YT_TRAILER_SKILL_ROOTS"] = str(plugins)
+    proc = run(env)
+    assert proc.returncode == 0, proc.stdout
+    assert "ok: HyperFrames skills" in proc.stdout
