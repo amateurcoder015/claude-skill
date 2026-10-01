@@ -1,0 +1,22 @@
+{
+  "style": "cinematic",
+  "styleReason": "e2e fixture",
+  "format": "9:16",
+  "duration": 30,
+  "palette": { "bg": "#0b0f1a", "accent": "#e8c37a", "fg": "#f4f1ea" },
+  "music": { "track": "assets/music/cinematic-1.mp3", "duck": true },
+  "overlays": ["letterbox", "grain-lightleak", "glitch-rgb"],
+  "scenes": [
+    { "type": "hero", "text": "PATTERNS", "dur": 3 },
+    { "type": "clip", "in": 1, "out": 3.5 },
+    { "type": "title", "scene": "cinematic/black-to-title", "text": "IN A WORLD", "dur": 2.5 },
+    { "type": "clip", "in": 12, "out": 14.5, "fx": ["push-in"], "cropX": 0.3 },
+    { "type": "clip", "in": 25, "out": 26.5, "fx": ["slowmo"] },
+    { "type": "montage", "panels": [{ "in": 33 }, { "in": 44 }], "dur": 2.5 },
+    { "type": "clip", "in": 48, "out": 50, "fx": ["flash-punch"] },
+    { "type": "title", "scene": "cinematic/slow-push-title", "text": "OF PATTERNS", "dur": 2 },
+    { "type": "clip", "in": 55, "out": 57.5, "fx": ["speed-ramp"] },
+    { "type": "clip", "in": 60, "out": 62.5, "fx": ["zoom-in"] },
+    { "type": "end-card", "title": "Test Pattern", "sub": "yt-trailer e2e", "dur": 5.83 }
+  ]
+}

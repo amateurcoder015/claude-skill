@@ -1,0 +1,21 @@
+{
+  "style": "highlight",
+  "styleReason": "e2e fixture",
+  "format": "16:9",
+  "duration": 30,
+  "palette": { "bg": "#0b0f1a", "accent": "#4fb3ff", "fg": "#f4f1ea" },
+  "music": null,
+  "overlays": [],
+  "scenes": [
+    { "type": "title", "scene": "highlight/chapter-bumper", "text": "THE TEST PATTERN", "sub": "PART ONE", "dur": 2.5 },
+    { "type": "clip", "in": 2, "out": 5, "caption": "Colors in motion" },
+    { "type": "clip", "in": 10, "out": 13, "fx": ["push-in"] },
+    { "type": "clip", "in": 20, "out": 23 },
+    { "type": "title", "scene": "highlight/quote-card", "text": "Every frame tells a story", "sub": "THE NARRATOR", "dur": 3 },
+    { "type": "clip", "in": 30, "out": 33, "fx": ["zoom-in"] },
+    { "type": "clip", "in": 40, "out": 43 },
+    { "type": "clip", "in": 50, "out": 52, "fx": ["slowmo"] },
+    { "type": "clip", "in": 60, "out": 62.5 },
+    { "type": "end-card", "title": "Test Pattern", "sub": "yt-trailer e2e", "dur": 3 }
+  ]
+}

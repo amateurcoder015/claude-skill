@@ -1,0 +1,18 @@
+[
+  {"query": "can you make a trailer for this? https://www.youtube.com/watch?v=_cMxraX_5RE its a short film and i want something i can post before the full thing goes up", "should_trigger": true},
+  {"query": "turn https://youtu.be/dQw4w9WgXcQ into a 30 second hype teaser, vertical please, its for tiktok", "should_trigger": true},
+  {"query": "/yt-trailer https://www.youtube.com/watch?v=abc123XYZ00 --style cinematic --length 60", "should_trigger": true},
+  {"query": "I recorded a 40 min conference talk, it's at ~/Movies/devconf-2026-keynote.mp4. Could you cut a highlight reel with captions from the best lines so I can share it on LinkedIn?", "should_trigger": true},
+  {"query": "my gaming montage is up at https://www.youtube.com/watch?v=Zk3jF8qP2Lm — make me a punchy promo with flashy cuts synced to music", "should_trigger": true},
+  {"query": "we have a documentary about coral reefs (file: /Users/me/Desktop/reef_final_v3.mov). need a moody 45s sizzle trailer for the festival submission", "should_trigger": true},
+  {"query": "make a teaser video out of this podcast episode https://www.youtube.com/watch?v=Pq9Lm2Xc4Bn, pick the funniest moments", "should_trigger": true},
+  {"query": "Create a movie-trailer style intro from my travel vlog footage at ./clips/iceland.mp4", "should_trigger": true},
+  {"query": "download this youtube video as an mp3 for me: https://www.youtube.com/watch?v=Qw8eR7tY6uI", "should_trigger": false},
+  {"query": "summarize what this youtube lecture says about transformers https://www.youtube.com/watch?v=Lm4Nq8Rt2Vz, bullet points are fine", "should_trigger": false},
+  {"query": "write me a script for a movie trailer about space pirates who steal a moon, voiceover style", "should_trigger": false},
+  {"query": "compress ~/Movies/wedding.mp4 so it's under 25MB for email, quality can drop a bit", "should_trigger": false},
+  {"query": "add burned-in english subtitles to interview.mp4 using the srt file next to it", "should_trigger": false},
+  {"query": "what's the best free video editor on mac for making trailers? davinci or imovie?", "should_trigger": false},
+  {"query": "build me an animated 15 second logo intro for my company Northwind, blue and white, no footage", "should_trigger": false},
+  {"query": "get the transcript of https://www.youtube.com/watch?v=Xy7Zq3Wv9Ab and save it to transcript.txt", "should_trigger": false}
+]

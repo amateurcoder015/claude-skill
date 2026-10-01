@@ -35,7 +35,7 @@ A shareable Claude Code skill that turns a YouTube URL (or a local video file) i
 ## 3. Invocation
 
 ```
-/yt-trailer <url | --file path.mp4> [--style cinematic|highlight|hype] [--vertical] [--length 30|45|60] [--music file.mp3] [--no-music] [--cookies-from-browser <browser>]
+/yt-trailer <url | --file path.mp4> [--style cinematic|highlight|hype] [--vertical] [--length 30|45|60] [--music file.mp3] [--no-music] [--cookies-from-browser <browser>] [--draft]
 ```
 
 | Flag | Default | Meaning |
@@ -47,30 +47,30 @@ A shareable Claude Code skill that turns a YouTube URL (or a local video file) i
 | `--no-music` | off | Never add a music track; original audio only |
 | `--file` | none | Use a local video instead of a URL |
 | `--cookies-from-browser` | none | Passed to yt-dlp for age-restricted or blocked videos |
+| `--draft` | off | Render with `--quality draft` for fast previews |
 
 ## 4. Architecture
 
 ```
-yt-trailer/
-├── .claude-plugin/plugin.json
+yt-trailer/                               (repo root)
+├── .claude-plugin/{plugin.json,marketplace.json}
 ├── skills/yt-trailer/
-│   ├── SKILL.md                # workflow Claude follows
-│   ├── scripts/
-│   │   ├── doctor.sh           # dependency check, prints install commands
-│   │   ├── fetch.py            # yt-dlp download: 720p mp4 + captions + info.json
-│   │   ├── analyze.py          # scene cuts + audio peaks + transcript → candidates.json
-│   │   ├── palette.py          # dominant colors from sampled frames
-│   │   └── build.mjs           # edl.json + scene library → HyperFrames project
+│   ├── SKILL.md                          workflow Claude follows
+│   ├── references/{edl-guide.md,scene-contract.md}
 │   ├── schema/edl.schema.json
+│   ├── scripts/
+│   │   ├── doctor.sh, fetch.py, analyze.py, palette.py, verify.py
+│   │   ├── build.mjs                     edl.json → project/
+│   │   └── lib/{html,timeline,edl,beats,compose,scenes,project}.mjs
 │   ├── scenes/
-│   │   ├── cinematic/          # tested HyperFrames sub-compositions
-│   │   ├── hype/
-│   │   ├── highlight/
-│   │   └── shared/             # clip player, end card, music bed
-│   └── assets/music/           # CC0 tracks + manifest.json (style, mood, bpm)
-├── tests/
+│   │   ├── cinematic/{slow-push-title,black-to-title,end-card}.html
+│   │   ├── hype/{kinetic-slam,end-card}.html
+│   │   ├── highlight/{quote-card,chapter-bumper,end-card}.html
+│   │   └── overlays/{letterbox,grain-lightleak,glitch-rgb}.html
+│   └── assets/music/                     six CC0 tracks + manifest.json
+├── tests/{py,js,scenes,e2e,evals,fixtures}
 ├── docs/
-└── README.md
+└── README.md, LICENSE, LICENSES-MUSIC.md
 ```
 
 ### Pipeline
@@ -79,9 +79,11 @@ yt-trailer/
 2. **fetch.py** downloads into `./trailer-<videoId>/source/`:
    - `video.mp4` (720p or best available up to 720p)
    - `captions.vtt` (uploaded captions preferred, auto-generated captions as fallback, absent if neither exists)
-   - `info.json` (title, channel, description, duration, chapters)
+   - `info.json` (title, channel, description, duration, chapters, `hasAudio`)
 
-   With `--file`, it copies the local file and generates a minimal `info.json` from the file name and ffprobe.
+   Captions: English uploaded captions first, then English auto-captions, then captions in the video's own language. Sources shorter than 15 s or longer than 2 hours are refused.
+
+   With `--file`, it copies the local file (converting non-MP4 files) and generates a minimal `info.json` from the file name and ffprobe. A sidecar `.vtt` next to the file is used as captions.
 3. **analyze.py** writes `candidates.json`:
    - Scene-change timestamps (ffmpeg `select='gt(scene,0.4)'`)
    - Audio loudness peaks (ffmpeg `ebur128` momentary loudness, top N windows)
@@ -97,7 +99,7 @@ yt-trailer/
    - Music decision (rules in section 6)
    - One custom hero scene (section 7)
 6. **build.mjs** validates `edl.json` against `edl.schema.json`, assembles a HyperFrames project in `./trailer-<videoId>/project/`, and copies the needed scenes and media.
-7. If music is used, `npx hyperframes beats` runs on the track, and `build.mjs` snaps cut points and type hits to the nearest beat (within ±150 ms).
+7. If music is used, `npx hyperframes beats` runs on the built project, the beat file is copied to `WORK/beats.json`, and `build.mjs --beats WORK/beats.json` rebuilds with each cut snapped to the nearest beat (within ±150 ms). The end-card absorbs the drift.
 8. `npx hyperframes check --snapshots`, then `npx hyperframes render --quality delivery`. Output: `./trailer-<videoId>/trailer.mp4`.
 9. ffprobe verifies duration (±0.5 s of target), resolution and the presence of an audio stream.
 
@@ -129,7 +131,7 @@ When the signals conflict, Claude picks the style with the most matching evidenc
 ## 6. Music
 
 - Original clip audio plays by default.
-- Claude adds a bundled CC0 track when the style needs it: usually `cinematic` and `hype`, rarely `highlight`. The track is chosen from `assets/music/manifest.json` by style and mood.
+- Claude adds a bundled CC0 track (six tracks from OpenGameArt, two per style, normalized to -16 LUFS) when the style needs it: usually `cinematic` and `hype`, rarely `highlight`. The track is chosen from `assets/music/manifest.json` by style and mood.
 - `--music file.mp3` replaces the bundled choice. `--no-music` forces original audio only.
 - When a music track plays under a clip that has speech, the music is ducked (lowered) during the speech.
 
@@ -137,24 +139,26 @@ When the signals conflict, Claude picks the style with the most matching evidenc
 
 ### Layer 1: scene library
 
-Tested HyperFrames sub-compositions for each style. Claude chooses and fills them; it does not edit them.
+Tested HyperFrames sub-compositions, chosen and filled by Claude, never edited per trailer. Scene files use tokens (`__ID__`, `__TEXT__`, `__BG__`, …) that `build.mjs` fills; the contract is in `references/scene-contract.md`.
 
-| Style | Scenes |
+| Kind | Items |
 |---|---|
-| cinematic | `slow-push-title`, `letterbox`, `grain-lightleak` (overlay), `slowmo-hold`, `black-to-title`, `end-card` |
-| hype | `kinetic-slam`, `flash-punch`, `glitch-rgb` (overlay), `split-montage`, `speed-ramp`, `end-card` |
-| highlight | `lower-third`, `quote-card`, `zoom-transition`, `chapter-bumper`, `end-card` |
-| shared | `clip` (video player with trim, crop, volume), `music-bed` |
+| Title scenes | `cinematic/slow-push-title`, `cinematic/black-to-title`, `hype/kinetic-slam`, `highlight/quote-card`, `highlight/chapter-bumper` |
+| End-cards | one per style: `<style>/end-card` |
+| Overlays (full length) | `letterbox`, `grain-lightleak`, `glitch-rgb` (flashes on every cut) |
+| Clip fx | `slowmo`, `speed-ramp`, `flash-punch`, `push-in`, `zoom-in` (at most one of the last three per clip) |
+| Clip extras | `caption` (animated lower third), `cropX` (vertical framing) |
+| Montage | `montage` scene: 2–3 clips side by side (stacked in 9:16) |
 
-Every scene reads the palette from CSS variables (`--c-bg`, `--c-accent`, `--c-text`), so each trailer matches its source video.
+Every scene uses the trailer palette (`bg`, `accent`, `fg`) taken from the source video's frames.
 
 ### Layer 2: registry effects
 
-Before hand-building an effect, the skill searches the HyperFrames registry (`npx hyperframes catalog --query ...`) and installs a matching block (glitch, grain, shimmer, CRT and similar). Installed blocks are referenced from `edl.json` via the `fx` field.
+Registry blocks are not wired through `edl.json`. Claude may search the HyperFrames registry for ideas while writing the hero scene, but the hero must stay one self-contained file.
 
 ### Layer 3: custom hero scene
 
-For each trailer, Claude writes one fully custom animated scene (usually the opening or the title reveal), using the `hyperframes-animation` skill. It goes in `project/custom/hero.html`.
+For each trailer, Claude writes one fully custom animated scene (usually the opening or the title reveal), using the `hyperframes-animation` skill. It goes in `WORK/custom/hero.html` and follows the scene contract.
 
 - It must pass `npx hyperframes check`.
 - If it fails twice, `edl.json` swaps it for the style's default title scene, and the run continues.
@@ -165,31 +169,45 @@ With `--vertical`, each clip is cropped to 9:16. The crop is centered by default
 
 ## 8. Edit plan (`edl.json`)
 
+The full format is `skills/yt-trailer/schema/edl.schema.json`. Example (from `references/edl-guide.md`):
+
 ```json
 {
   "style": "cinematic",
-  "styleReason": "Short film with narrative voice-over and slow pacing",
+  "styleReason": "Short film with narrative voice-over, slow pacing and a dramatic score",
   "format": "16:9",
   "duration": 45,
-  "palette": ["#0b0f1a", "#e8c37a", "#f4f1ea"],
-  "music": { "track": "assets/music/cinematic-rise.mp3", "duck": true },
+  "palette": { "bg": "#0b0f1a", "accent": "#e8c37a", "fg": "#f4f1ea" },
+  "music": { "track": "assets/music/cinematic-1.mp3", "duck": true },
+  "overlays": ["letterbox", "grain-lightleak"],
   "scenes": [
-    { "type": "hero", "src": "custom/hero.html", "dur": 4 },
+    { "type": "hero", "text": "THE LAST LIGHTHOUSE", "dur": 4 },
     { "type": "clip", "in": 132.4, "out": 135.1, "audio": "original" },
-    { "type": "title", "scene": "cinematic/slow-push-title", "text": "ONE MAN", "dur": 2 },
-    { "type": "clip", "in": 610.0, "out": 612.2, "fx": ["grain"], "cropX": 0.5 },
-    { "type": "end-card", "title": "{video title}", "sub": "{channel}", "dur": 4 }
+    { "type": "title", "scene": "cinematic/slow-push-title", "text": "ONE MAN", "dur": 2.5 },
+    { "type": "clip", "in": 610.0, "out": 613.0, "fx": ["push-in"] },
+    { "type": "clip", "in": 300.0, "out": 301.5, "fx": ["slowmo"] },
+    { "type": "title", "scene": "cinematic/black-to-title", "text": "ONE CHOICE", "dur": 2.5 },
+    { "type": "clip", "in": 845.2, "out": 848.2 },
+    { "type": "clip", "in": 1020.0, "out": 1023.0, "audio": "mute" },
+    { "type": "montage", "panels": [{ "in": 400 }, { "in": 920 }, { "in": 1300 }], "dur": 3 },
+    { "type": "clip", "in": 1500.0, "out": 1503.3, "fx": ["zoom-in"] },
+    { "type": "title", "scene": "cinematic/slow-push-title", "text": "EVERYTHING CHANGES", "dur": 2.5 },
+    { "type": "clip", "in": 1610.0, "out": 1613.5 },
+    { "type": "clip", "in": 1702.0, "out": 1705.0 },
+    { "type": "end-card", "title": "The Last Lighthouse", "sub": "Blue Hour Films", "dur": 6 }
   ]
 }
 ```
 
 Validation rules (enforced by `build.mjs`):
 
-- `style` is one of `cinematic`, `highlight`, `hype`.
-- `format` is `16:9` or `9:16`.
-- Every clip has `0 <= in < out <= source duration`.
-- The sum of scene durations equals `duration` within ±0.5 s (clip duration = `out - in`).
-- Every referenced scene, fx block and music file exists.
+- `style` is one of `cinematic`, `highlight`, `hype`; `format` is `16:9` or `9:16`; `duration` is 30, 45 or 60.
+- `palette` is an object `{bg, accent, fg}` of `#rrggbb` colors.
+- Every clip has `0 <= in`, `out <= source duration` and is at least 0.3 s long.
+- Clip duration on the timeline is `(out - in) / rate` (rate 0.5 for `slowmo`, 1.5 for `speed-ramp`, else 1). Every other scene uses `dur`. The sum equals `duration` within ±0.5 s.
+- 6–15 shots (clips plus montage panels); at most one of `flash-punch`, `push-in`, `zoom-in` per clip; never `slowmo` with `speed-ramp`.
+- Title text at most 40 characters (120 for `highlight/quote-card`).
+- Every referenced scene and music file exists; a `hero` scene needs `WORK/custom/hero.html`.
 - Exactly one `end-card` scene, and it is last.
 
 Validation failure prints every error. Claude fixes `edl.json` and runs the build again.
@@ -200,7 +218,7 @@ Validation failure prints every error. Claude fixes `edl.json` and runs the buil
 |---|---|
 | Missing dependency | `doctor.sh` prints the install command for the OS and stops |
 | Private, age-restricted, region-blocked or bot-blocked video | Message names the cause and suggests `--cookies-from-browser <browser>` or `--file local.mp4` |
-| Video longer than 2 hours | Refuse with a message suggesting `--file` with a trimmed copy |
+| Video longer than 2 hours or shorter than 15 s | Refuse with a clear message (`--file` with a trimmed copy for long videos) |
 | No captions | Clips come from scene changes and audio peaks only; title text comes from title and description |
 | `edl.json` invalid | All errors printed; Claude corrects and retries (max 3 attempts) |
 | Hero scene fails check twice | Replace with the style's default title scene |
