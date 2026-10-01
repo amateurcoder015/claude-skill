@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;900&display=swap" />
+      <style>
+        #root { position: absolute; inset: 0; overflow: hidden; background: __BG__; }
+        .hlc-glow { position: absolute; inset: -20%; background: radial-gradient(circle at 70% 60%, color-mix(in srgb, __ACCENT__ 22%, transparent) 0%, transparent 55%); }
+        .hlc-stack { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2.4vmin; padding: 0 9%; text-align: center; }
+        .hlc-title { margin: 0; font-family: "Inter", sans-serif; font-weight: 900; font-size: 7.5vmin; line-height: 1.08; letter-spacing: -0.02em; color: __FG__; }
+        .hlc-rule { width: 16vmin; height: 0.6vmin; background: __ACCENT__; }
+        .hlc-sub { font-family: "Inter", sans-serif; font-weight: 700; font-size: 3vmin; letter-spacing: 0.12em; text-transform: uppercase; color: __ACCENT__; }
+        .hlc-sub:empty { display: none; }
+        .hlc-cta { margin-top: 1vmin; font-family: "Inter", sans-serif; font-weight: 500; font-size: 2.8vmin; color: __FG__; border: 2px solid __FG__; border-radius: 999px; padding: 1.2vmin 3.6vmin; }
+      </style>
+      <div id="root" data-composition-id="__ID__" data-width="__W__" data-height="__H__">
+        <div class="hlc-glow"></div>
+        <div class="hlc-stack">
+          <h1 class="hlc-title">__TEXT__</h1>
+          <div class="hlc-rule"></div>
+          <div class="hlc-sub">__SUB__</div>
+          <div class="hlc-cta">Watch the full video</div>
+        </div>
+      </div>
+      <script>
+        (() => {
+          const q = (sel) => document.querySelectorAll('[data-composition-id="__ID__"] ' + sel);
+          const D = __DUR__;
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo(q(".hlc-glow"), { xPercent: 4 }, { xPercent: -6, duration: D, ease: "sine.inOut" }, 0);
+          tl.fromTo(q(".hlc-title"), { opacity: 0, y: 28 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 0.1);
+          tl.fromTo(q(".hlc-rule"), { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.inOut" }, 0.4);
+          tl.fromTo(q(".hlc-sub"), { opacity: 0 }, { opacity: 1, duration: 0.5 }, 0.6);
+          tl.fromTo(q(".hlc-cta"), { opacity: 0, y: 12 }, { opacity: 0.9, y: 0, duration: 0.5, ease: "power2.out" }, 0.8);
+          tl.fromTo(q(".hlc-stack"), { scale: 1 }, { scale: 1.03, duration: D, ease: "none" }, 0);
+          tl.to(q(".hlc-stack"), { opacity: 0, duration: 0.6 }, D - 0.6);
+          window.__timelines["__ID__"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

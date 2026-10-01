@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@700;900&display=swap" />
+      <style>
+        #root { position: absolute; inset: 0; overflow: hidden; background: __BG__; }
+        .cb-wipe { position: absolute; inset: 0; background: __ACCENT__; }
+        .cb-box { position: absolute; top: 0; bottom: 0; left: 9%; right: 9%; display: flex; flex-direction: column; justify-content: center; gap: 2vmin; }
+        .cb-sub { font-family: "Inter", sans-serif; font-weight: 700; font-size: 3vmin; letter-spacing: 0.3em; text-transform: uppercase; color: __ACCENT__; }
+        .cb-sub:empty { display: none; }
+        .cb-text { margin: 0; font-family: "Inter", sans-serif; font-weight: 900; font-size: 10vmin; line-height: 1; letter-spacing: -0.03em; color: __FG__; }
+        .cb-rule { width: 22vmin; height: 0.6vmin; background: __ACCENT__; transform-origin: 0% 50%; }
+      </style>
+      <div id="root" data-composition-id="__ID__" data-width="__W__" data-height="__H__">
+        <div class="cb-box">
+          <div class="cb-sub">__SUB__</div>
+          <h1 class="cb-text">__TEXT__</h1>
+          <div class="cb-rule"></div>
+        </div>
+        <div class="cb-wipe"></div>
+      </div>
+      <script>
+        (() => {
+          const q = (sel) => document.querySelectorAll('[data-composition-id="__ID__"] ' + sel);
+          const D = __DUR__;
+          const tl = gsap.timeline({ paused: true });
+          tl.set(q(".cb-wipe"), { transformOrigin: "0% 50%" }, 0);
+          tl.fromTo(q(".cb-wipe"), { scaleX: 0 }, { scaleX: 1, duration: 0.35, ease: "power3.in" }, 0);
+          tl.set(q(".cb-wipe"), { transformOrigin: "100% 50%" }, 0.35);
+          tl.to(q(".cb-wipe"), { scaleX: 0, duration: 0.4, ease: "power3.out" }, 0.35);
+          tl.fromTo(q(".cb-sub"), { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.45, ease: "power3.out" }, 0.45);
+          tl.fromTo(q(".cb-text"), { opacity: 0, x: -50 }, { opacity: 1, x: 0, duration: 0.55, ease: "power3.out" }, 0.5);
+          tl.fromTo(q(".cb-rule"), { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: "power3.inOut" }, 0.7);
+          tl.fromTo(q(".cb-box"), { y: 0 }, { y: -16, duration: D, ease: "none" }, 0);
+          tl.to(q(".cb-box"), { opacity: 0, duration: 0.3 }, D - 0.3);
+          window.__timelines["__ID__"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>
