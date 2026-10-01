@@ -50,7 +50,7 @@ function hostDiv(id, start, dur, W, H, track) {
   return `<div id="${id}" class="layer" data-composition-id="${id}" data-composition-src="compositions/${id}.html" data-start="${start}" data-duration="${dur}" data-track-index="${track}" data-width="${W}" data-height="${H}" style="z-index:${track}"></div>`;
 }
 
-function clipParts(s, id, hasAudio) {
+function clipParts(s, id, hasAudio, audioTrack) {
   const fx = s.fx || [];
   const timing = `data-start="${s.start}" data-duration="${s.dur}" data-media-start="${s.in}"`;
   let speed = "";
@@ -65,7 +65,7 @@ function clipParts(s, id, hasAudio) {
     `<div class="frame" id="${id}-frame"><video id="${id}-v" class="clip" src="assets/video.mp4" ${timing} data-track-index="0"${speed}${pos} muted playsinline></video></div>`,
   ];
   if (hasAudio && s.audio !== "mute") {
-    html.push(`<audio id="${id}-a" src="assets/video.mp4" ${timing} data-track-index="10" data-volume="1"${speed}></audio>`);
+    html.push(`<audio id="${id}-a" src="assets/video.mp4" ${timing} data-track-index="${audioTrack}" data-volume="1"${speed}></audio>`);
   }
   const frame = `#${id}-frame`;
   const js = [];
@@ -110,10 +110,14 @@ export function composeIndex(edl, { transcript = [], musicSrc = null, hasAudio =
   const body = [];
   const js = [];
   const subcomps = [];
+  let audioClips = 0;
   timed.forEach((s, i) => {
     const id = `s${i}`;
     if (s.type === "clip" || s.type === "montage") {
-      const parts = s.type === "clip" ? clipParts(s, id, hasAudio) : montageParts(s, id, edl.format === "9:16");
+      // Alternate clip audio between tracks 10 and 12 so back-to-back cuts never overlap on one track.
+      const audioTrack = audioClips % 2 ? 12 : 10;
+      if (s.type === "clip" && hasAudio && s.audio !== "mute") audioClips += 1;
+      const parts = s.type === "clip" ? clipParts(s, id, hasAudio, audioTrack) : montageParts(s, id, edl.format === "9:16");
       body.push(...parts.html);
       js.push(...parts.js);
       return;

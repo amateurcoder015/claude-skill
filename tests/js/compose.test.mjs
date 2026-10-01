@@ -111,3 +111,9 @@ test("last scene is stretched to the exact total", () => {
   assert.equal(subcomps.find((s) => s.id === "s9").vars.DUR, 4);
   assert.match(html, /id="s9"[^>]*data-start="26" data-duration="4"/);
 });
+
+test("back-to-back clip audio alternates tracks so cuts never overlap", () => {
+  const { html } = composeIndex(validEdl());
+  const tracks = [...html.matchAll(/<audio id="s\d+-a"[^>]*data-track-index="(\d+)"/g)].map((m) => m[1]);
+  assert.deepEqual(tracks.slice(0, 4), ["10", "12", "10", "12"]);
+});
