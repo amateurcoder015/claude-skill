@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" />
+      <style>
+        #root { position: absolute; inset: 0; overflow: hidden; background: __BG__; }
+        .hero-ring { position: absolute; left: 50%; top: 50%; width: 60vmin; height: 60vmin; margin: -30vmin 0 0 -30vmin; border-radius: 50%; border: 0.6vmin solid __ACCENT__; }
+        .hero-title { position: absolute; inset: 0; display: grid; place-items: center; margin: 0; padding: 0 8%; text-align: center; font-family: "Bebas Neue", sans-serif; font-size: 16vmin; line-height: 0.95; color: __FG__; }
+        .hero-line { display: block; max-width: 100%; }
+        .hero-word { display: inline-block; white-space: nowrap; }
+        .hero-ch { display: inline-block; }
+      </style>
+      <div id="root" data-composition-id="__ID__" data-width="__W__" data-height="__H__">
+        <div class="hero-ring"></div>
+        <h1 class="hero-title"><span class="hero-line">__TEXT__</span></h1>
+      </div>
+      <script>
+        (() => {
+          const q = (sel) => document.querySelectorAll('[data-composition-id="__ID__"] ' + sel);
+          const D = __DUR__;
+          const line = q(".hero-line")[0];
+          const words = line.textContent.trim().split(/\s+/);
+          line.textContent = "";
+          let count = 0;
+          words.forEach((w, i) => {
+            const word = document.createElement("span");
+            word.className = "hero-word";
+            [...w].forEach((c) => {
+              const span = document.createElement("span");
+              span.className = "hero-ch";
+              span.textContent = c;
+              word.appendChild(span);
+              count += 1;
+            });
+            line.appendChild(word);
+            if (i < words.length - 1) line.appendChild(document.createTextNode(" "));
+          });
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo(q(".hero-ring"), { scale: 0.2, opacity: 0 }, { scale: 1.6, opacity: 1, duration: D, ease: "power1.out" }, 0);
+          tl.fromTo(q(".hero-ch"), { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.5, stagger: Math.min(0.06, (D * 0.4) / Math.max(count, 1)), ease: "back.out(1.8)" }, 0.2);
+          tl.to(q(".hero-title, .hero-ring"), { opacity: 0, duration: 0.3 }, D - 0.3);
+          window.__timelines["__ID__"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>
