@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        #root { position: absolute; inset: 0; overflow: hidden; background: transparent; pointer-events: none; }
+        .gr-strip { position: absolute; left: -5%; right: -5%; opacity: 0; mix-blend-mode: difference; }
+        .gr-a { height: 6%; background: __ACCENT__; }
+        .gr-b { height: 3%; background: #00e5ff; }
+        .gr-c { height: 9%; background: __FG__; }
+        .gr-tint { position: absolute; inset: 0; opacity: 0; background: linear-gradient(90deg, rgba(255, 0, 80, 0.5), rgba(0, 229, 255, 0.5)); mix-blend-mode: screen; }
+      </style>
+      <div id="root" data-composition-id="__ID__" data-width="__W__" data-height="__H__">
+        <div class="gr-strip gr-a"></div>
+        <div class="gr-strip gr-b"></div>
+        <div class="gr-strip gr-c"></div>
+        <div class="gr-tint"></div>
+      </div>
+      <script>
+        (() => {
+          const q = (sel) => document.querySelectorAll('[data-composition-id="__ID__"] ' + sel);
+          const D = __DUR__;
+          const hits = __HITS__.filter((t) => t > 0.05 && t < D - 0.15);
+          const strips = q(".gr-strip");
+          const tl = gsap.timeline({ paused: true });
+          tl.set(q(".gr-strip, .gr-tint"), { opacity: 0 }, 0);
+          hits.forEach((t, i) => {
+            strips.forEach((s, j) => {
+              const top = ((i * 37 + j * 23) % 80) + 5;
+              const shift = 20 + ((i * 13 + j * 7) % 40);
+              tl.set(s, { top: top + "%", opacity: 0.85, x: (j % 2 ? -1 : 1) * shift }, t - 0.04);
+              tl.set(s, { x: (j % 2 ? 1 : -1) * 18 }, t + 0.04);
+              tl.set(s, { opacity: 0 }, t + 0.12);
+            });
+            tl.fromTo(q(".gr-tint"), { opacity: 0.35 }, { opacity: 0, duration: 0.14, ease: "none", immediateRender: false }, t - 0.02);
+          });
+          tl.to({}, { duration: D }, 0);
+          window.__timelines["__ID__"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

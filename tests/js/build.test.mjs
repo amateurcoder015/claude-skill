@@ -66,3 +66,13 @@ test("CLI exits 2 with readable errors", () => {
   assert.equal(proc.status, 2);
   assert.match(proc.stdout, /EDL INVALID:\n  - duration must be one of 30, 45, 60/);
 });
+
+test("build with real scenes and all overlays leaves no tokens", () => {
+  const work = makeWork({ ...validEdl(), overlays: ["letterbox", "grain-lightleak", "glitch-rgb"] });
+  const result = build(work);
+  assert.equal(result.ok, true, JSON.stringify(result.errors));
+  for (const f of readdirSync(join(work, "project", "compositions"))) {
+    const html = readFileSync(join(work, "project", "compositions", f), "utf8");
+    assert.ok(!/__[A-Z]+__/.test(html), `${f} has unfilled tokens`);
+  }
+});

@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <style>
+        #root { position: absolute; inset: 0; overflow: hidden; background: transparent; pointer-events: none; }
+        .lb-bar { position: absolute; left: 0; right: 0; height: 0; background: #000; }
+        .lb-top { top: 0; }
+        .lb-bottom { bottom: 0; }
+      </style>
+      <div id="root" data-composition-id="__ID__" data-width="__W__" data-height="__H__">
+        <div class="lb-bar lb-top"></div>
+        <div class="lb-bar lb-bottom"></div>
+      </div>
+      <script>
+        (() => {
+          const q = (sel) => document.querySelectorAll('[data-composition-id="__ID__"] ' + sel);
+          const D = __DUR__;
+          const bar = __W__ > __H__ ? 12.8 : 6;
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo(q(".lb-bar"), { height: "0%" }, { height: bar + "%", duration: Math.min(1.2, D / 4), ease: "power3.inOut" }, 0);
+          tl.to(q(".lb-bar"), { height: bar * 1.15 + "%", duration: 0.8, ease: "power2.inOut", immediateRender: false }, Math.max(0, D - 2.2));
+          window.__timelines["__ID__"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

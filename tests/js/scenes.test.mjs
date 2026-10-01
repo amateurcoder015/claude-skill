@@ -4,6 +4,7 @@ import { readFileSync, readdirSync, statSync, existsSync } from "node:fs";
 import { join, relative } from "node:path";
 import { fillScene } from "../../skills/yt-trailer/scripts/lib/scenes.mjs";
 import { ROOT, SKILL_DIR } from "./fixtures.mjs";
+import { TITLE_SCENES, STYLES, OVERLAYS } from "../../skills/yt-trailer/scripts/lib/edl.mjs";
 
 test("fillScene replaces tokens and escapes text", () => {
   const out = fillScene('<h1 class="__ID__">__TEXT__</h1><p>__SUB__</p><i style="color:__FG__">__DUR__</i>', {
@@ -51,4 +52,9 @@ test("every library scene follows the contract", () => {
 
 test("hero fixture follows the contract", () => {
   assertSceneContract(readFileSync(join(ROOT, "tests/fixtures/hero.html"), "utf8"), "fixture/hero");
+});
+
+test("every scene the plan can reference exists", () => {
+  const needed = [...TITLE_SCENES, ...STYLES.map((s) => `${s}/end-card`), ...OVERLAYS.map((o) => `overlays/${o}`)];
+  for (const name of needed) assert.ok(existsSync(join(SKILL_DIR, "scenes", `${name}.html`)), `missing scene ${name}`);
 });
