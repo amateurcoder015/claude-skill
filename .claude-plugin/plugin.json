@@ -1,0 +1,9 @@
+{
+  "name": "yt-trailer",
+  "version": "0.1.0",
+  "description": "Turn a YouTube URL or video file into a short, animated trailer rendered with HyperFrames.",
+  "author": { "name": "Bhavya Kothari" },
+  "repository": "https://github.com/amateurcoder015/claude-skill",
+  "license": "MIT",
+  "keywords": ["video", "trailer", "youtube", "hyperframes"]
+}

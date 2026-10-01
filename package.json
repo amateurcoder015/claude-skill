@@ -1,0 +1,11 @@
+{
+  "name": "yt-trailer",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "test": "node --test tests/js/",
+    "test:scenes": "node tests/scenes/check_scenes.mjs",
+    "test:e2e": "bash tests/e2e/run_local.sh"
+  }
+}

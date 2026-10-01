@@ -1,0 +1,11 @@
+{
+  "name": "yt-trailer",
+  "owner": { "name": "amateurcoder015" },
+  "plugins": [
+    {
+      "name": "yt-trailer",
+      "source": "./",
+      "description": "Turn a YouTube URL or video file into a short, animated trailer rendered with HyperFrames."
+    }
+  ]
+}
