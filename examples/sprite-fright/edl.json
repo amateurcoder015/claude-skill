@@ -1,0 +1,27 @@
+{
+  "style": "cinematic",
+  "styleReason": "Narrative animated short film (Film & Animation) with a story arc from campsite comedy to a night-time forest attack",
+  "format": "16:9",
+  "duration": 45,
+  "palette": { "bg": "#040c14", "accent": "#b89838", "fg": "#f5f3ee" },
+  "music": { "track": "assets/music/cinematic-1.mp3", "duck": true },
+  "overlays": ["letterbox", "grain-lightleak"],
+  "scenes": [
+    { "type": "hero", "text": "SPRITE FRIGHT", "sub": "A BLENDER STUDIO FILM", "dur": 4 },
+    { "type": "clip", "in": 17.2, "out": 19.7, "audio": "original" },
+    { "type": "title", "scene": "cinematic/slow-push-title", "text": "THEY CAME TO CAMP", "dur": 2.5 },
+    { "type": "clip", "in": 39.4, "out": 42.7 },
+    { "type": "clip", "in": 74.3, "out": 77.6, "fx": ["push-in"] },
+    { "type": "title", "scene": "cinematic/black-to-title", "text": "THEY MET THE LOCALS", "dur": 2.5 },
+    { "type": "clip", "in": 165.0, "out": 167.5 },
+    { "type": "clip", "in": 206.1, "out": 208.9 },
+    { "type": "clip", "in": 280.0, "out": 282.0, "fx": ["slowmo"], "audio": "mute" },
+    { "type": "title", "scene": "cinematic/slow-push-title", "text": "NOW THE FOREST FIGHTS BACK", "dur": 2.5 },
+    { "type": "clip", "in": 303.4, "out": 305.4, "fx": ["flash-punch"] },
+    { "type": "clip", "in": 305.7, "out": 307.6 },
+    { "type": "montage", "panels": [{ "in": 300 }, { "in": 360 }, { "in": 440 }], "dur": 2.5 },
+    { "type": "clip", "in": 330.1, "out": 332.2, "fx": ["zoom-in"] },
+    { "type": "clip", "in": 432.7, "out": 436.3 },
+    { "type": "end-card", "title": "Sprite Fright", "sub": "Blender Studio", "dur": 3 }
+  ]
+}

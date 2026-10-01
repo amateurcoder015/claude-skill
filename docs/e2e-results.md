@@ -13,7 +13,7 @@ Generated 70 s test-pattern video, fixed edit plans, no network or Claude decisi
 
 | Video | URL | License | Expected style | Chosen style | Length/format | verify.py |
 |---|---|---|---|---|---|---|
-| Sprite Fright (Blender Studio short film) | https://www.youtube.com/watch?v=_cMxraX_5RE | CC BY 4.0 (Wikimedia Commons record) | cinematic | cinematic | 45 s 16:9 | see below |
+| Sprite Fright (Blender Studio short film) | https://www.youtube.com/watch?v=_cMxraX_5RE | CC BY 4.0 (Wikimedia Commons record) | cinematic | cinematic | 45 s 16:9 | OK (45.00 s, 1920x1080) |
 
 Issues found on this run and fixed in the skill:
 - `hyperframes check` flagged `duplicate_audio_track` at hard cuts between speech clips. Clip audio now alternates tracks 10 and 12.
