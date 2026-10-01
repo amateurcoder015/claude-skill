@@ -12,9 +12,9 @@ sys.path.insert(0, str(SCRIPTS))
 
 
 def make_sample(path: Path, seconds_per_color: int = 6, audio: bool = True) -> Path:
-    """Write a test video: red, green, blue segments; tone loud only 9-10 s."""
+    """Write a test video: red, white, blue segments; tone loud only 9-10 s."""
     cmd = ["ffmpeg", "-y", "-hide_banner", "-loglevel", "error"]
-    for color in ("red", "green", "blue"):
+    for color in ("red", "white", "blue"):
         cmd += ["-f", "lavfi", "-i", f"color=c={color}:s=320x180:d={seconds_per_color}:r=25"]
     total = seconds_per_color * 3
     video = "[0:v][1:v][2:v]concat=n=3:v=1:a=0[v]"
