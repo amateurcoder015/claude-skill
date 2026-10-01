@@ -1,0 +1,64 @@
+{
+  "tracks": [
+    {
+      "file": "assets/music/cinematic-1.mp3",
+      "style": "cinematic",
+      "mood": "epic, rising, orchestral",
+      "title": "Inevitable",
+      "artist": "vitalezzz",
+      "source": "https://opengameart.org/content/inevitable",
+      "license": "CC0 1.0",
+      "duration": 120.0
+    },
+    {
+      "file": "assets/music/cinematic-2.mp3",
+      "style": "cinematic",
+      "mood": "dark, brooding, heroic",
+      "title": "The Last Horn",
+      "artist": "redFireMeat",
+      "source": "https://opengameart.org/content/the-last-horn",
+      "license": "CC0 1.0",
+      "duration": 120.0
+    },
+    {
+      "file": "assets/music/hype-1.mp3",
+      "style": "hype",
+      "mood": "driving electronic action",
+      "title": "Neural Malfunction",
+      "artist": "vitalezzz",
+      "source": "https://opengameart.org/content/neural-malfunction",
+      "license": "CC0 1.0",
+      "duration": 120.0
+    },
+    {
+      "file": "assets/music/hype-2.mp3",
+      "style": "hype",
+      "mood": "fast, energetic, action",
+      "title": "Action Track",
+      "artist": "LushoGames",
+      "source": "https://opengameart.org/content/action-track",
+      "license": "CC0 1.0",
+      "duration": 120.0
+    },
+    {
+      "file": "assets/music/highlight-1.mp3",
+      "style": "highlight",
+      "mood": "light, upbeat, friendly",
+      "title": "My Street",
+      "artist": "congusbongus",
+      "source": "https://opengameart.org/content/my-street",
+      "license": "CC0 1.0",
+      "duration": 120.0
+    },
+    {
+      "file": "assets/music/highlight-2.mp3",
+      "style": "highlight",
+      "mood": "calm lo-fi, relaxed",
+      "title": "Chill Lofi Inspired",
+      "artist": "omfgdude",
+      "source": "https://opengameart.org/content/chill-lofi-inspired",
+      "license": "CC0 1.0",
+      "duration": 120.0
+    }
+  ]
+}
