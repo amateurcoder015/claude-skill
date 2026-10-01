@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" />
+      <style>
+        #root { position: absolute; inset: 0; overflow: hidden; background: __BG__; }
+        .hec-stripes { position: absolute; top: -20%; bottom: -20%; left: 0; width: 200%; background: repeating-linear-gradient(115deg, color-mix(in srgb, __ACCENT__ 18%, transparent) 0 40px, transparent 40px 120px); }
+        .hec-stack { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2.5vmin; padding: 0 6%; text-align: center; }
+        .hec-title { margin: 0; font-family: "Bebas Neue", sans-serif; font-size: 13vmin; line-height: 0.92; color: __FG__; text-shadow: 6px 0 0 color-mix(in srgb, __ACCENT__ 70%, transparent), -6px 0 0 rgba(0, 200, 255, 0.5); }
+        .hec-sub { font-family: "Bebas Neue", sans-serif; font-size: 4.4vmin; letter-spacing: 0.25em; color: __ACCENT__; }
+        .hec-sub:empty { display: none; }
+        .hec-cta { font-family: "Bebas Neue", sans-serif; font-size: 4vmin; letter-spacing: 0.2em; color: __BG__; background: __ACCENT__; padding: 1.2vmin 4vmin; border-radius: 999px; }
+      </style>
+      <div id="root" data-composition-id="__ID__" data-width="__W__" data-height="__H__">
+        <div class="hec-stripes"></div>
+        <div class="hec-stack">
+          <h1 class="hec-title">__TEXT__</h1>
+          <div class="hec-sub">__SUB__</div>
+          <div class="hec-cta">WATCH NOW</div>
+        </div>
+      </div>
+      <script>
+        (() => {
+          const q = (sel) => document.querySelectorAll('[data-composition-id="__ID__"] ' + sel);
+          const D = __DUR__;
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo(q(".hec-stripes"), { xPercent: 0 }, { xPercent: -50, duration: D, ease: "none" }, 0);
+          tl.fromTo(q(".hec-title"), { opacity: 0, scale: 3 }, { opacity: 1, scale: 1, duration: 0.3, ease: "back.out(2)" }, 0);
+          tl.to(q(".hec-stack"), { keyframes: [{ x: -16, duration: 0.04 }, { x: 12, duration: 0.04 }, { x: -6, duration: 0.04 }, { x: 0, duration: 0.04 }] }, 0.08);
+          tl.fromTo(q(".hec-sub"), { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.3, ease: "power3.out" }, 0.35);
+          tl.fromTo(q(".hec-cta"), { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2.5)" }, 0.6);
+          const pulses = Math.max(0, Math.floor((D - 1.4) / 0.4));
+          tl.to(q(".hec-cta"), { scale: 1.08, duration: 0.4, yoyo: true, repeat: pulses, ease: "sine.inOut", immediateRender: false }, 1.0);
+          tl.to(q(".hec-stack"), { opacity: 0, duration: 0.3, ease: "power2.in" }, D - 0.3);
+          window.__timelines["__ID__"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

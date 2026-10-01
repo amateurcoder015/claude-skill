@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" />
+      <style>
+        #root { position: absolute; inset: 0; overflow: hidden; background: __BG__; }
+        .ks-stripes { position: absolute; top: -20%; bottom: -20%; left: 0; width: 200%; background: repeating-linear-gradient(115deg, color-mix(in srgb, __ACCENT__ 22%, transparent) 0 40px, transparent 40px 120px); }
+        .ks-shake { position: absolute; inset: 0; display: grid; place-items: center; }
+        .ks-text { margin: 0; padding: 0 6%; text-align: center; font-family: "Bebas Neue", sans-serif; font-size: 17vmin; line-height: 0.92; text-transform: uppercase; color: __FG__; }
+        .ks-w { display: inline-block; }
+        .ks-w:nth-child(even) { color: __ACCENT__; }
+        .ks-sub { position: absolute; left: 0; right: 0; bottom: 12%; text-align: center; font-family: "Bebas Neue", sans-serif; font-size: 5vmin; letter-spacing: 0.3em; color: __FG__; }
+        .ks-sub:empty { display: none; }
+      </style>
+      <div id="root" data-composition-id="__ID__" data-width="__W__" data-height="__H__">
+        <div class="ks-stripes"></div>
+        <div class="ks-shake"><h1 class="ks-text">__TEXT__</h1></div>
+        <div class="ks-sub">__SUB__</div>
+      </div>
+      <script>
+        (() => {
+          const q = (sel) => document.querySelectorAll('[data-composition-id="__ID__"] ' + sel);
+          const D = __DUR__;
+          const el = q(".ks-text")[0];
+          const words = el.textContent.trim().split(/\s+/);
+          el.textContent = "";
+          words.forEach((w, i) => {
+            const span = document.createElement("span");
+            span.className = "ks-w";
+            span.textContent = w;
+            el.appendChild(span);
+            if (i < words.length - 1) el.appendChild(document.createTextNode(" "));
+          });
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo(q(".ks-stripes"), { xPercent: 0 }, { xPercent: -50, duration: D, ease: "none" }, 0);
+          const step = Math.min(0.28, (D * 0.6) / Math.max(words.length, 1));
+          q(".ks-w").forEach((w, i) => {
+            tl.fromTo(w, { opacity: 0, scale: 2.6, rotation: i % 2 ? -6 : 6 }, { opacity: 1, scale: 1, rotation: 0, duration: 0.22, ease: "back.out(2)" }, i * step);
+            tl.to(q(".ks-shake"), { keyframes: [{ x: -14, duration: 0.04 }, { x: 10, duration: 0.04 }, { x: -6, duration: 0.04 }, { x: 0, duration: 0.04 }] }, i * step + 0.04);
+          });
+          tl.fromTo(q(".ks-sub"), { opacity: 0, y: 20 }, { opacity: 0.9, y: 0, duration: 0.3, ease: "power3.out" }, words.length * step);
+          tl.fromTo(q(".ks-text"), { scale: 1 }, { scale: 1.06, duration: D, ease: "none" }, 0);
+          tl.to(q(".ks-shake, .ks-sub"), { opacity: 0, duration: 0.2, ease: "power2.in" }, D - 0.2);
+          window.__timelines["__ID__"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>
